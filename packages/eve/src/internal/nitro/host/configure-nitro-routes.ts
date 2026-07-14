@@ -52,10 +52,6 @@ function escapeUnsafeCharsForInlineJs(value: string): string {
   return value.replace(/[<>\/\\\b\f\n\r\t\0\u2028\u2029]/g, (char) => INLINE_JS_UNSAFE_CHAR_MAP[char] ?? char);
 }
 
-function includesWorkflowBundles(surface: NitroBuildSurface): boolean {
-  return includesWorkflowRoute(surface);
-}
-
 function includesWorkflowRoute(surface: NitroBuildSurface): boolean {
   return surface === "all" || surface === "flow";
 }
@@ -223,6 +219,10 @@ function buildWorkflowFileHandlerSource(input: {
       lines.push(`import ${JSON.stringify(input.workflowWorldPluginImportSpecifier)};`);
     }
 
+    // NOTE: The generated handler intentionally uses top-level `await`.
+    // This requires the emitted module to stay ESM (for example `.mjs`) and be
+    // loaded/transpiled by tooling that supports top-level await. Changing the
+    // extension/loader pipeline to CommonJS or non-TLA environments will fail at load time.
     lines.push(
       `import { getWorld as __eveGetWorkflowWorld } from ${JSON.stringify(input.runtimeImportSpecifier)};`,
       "",
@@ -245,7 +245,7 @@ function buildWorkflowFileHandlerSource(input: {
     );
   }
 
-  lines.push("", "export default async ({ req }) => {", "  return await POST(req);", "};", "");
+  lines.push("", "export default async ({ req }) => {", "  return POST(req);", "};", "");
 
   return lines.join("\n");
 }
