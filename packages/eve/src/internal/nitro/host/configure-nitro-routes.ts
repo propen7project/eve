@@ -245,7 +245,7 @@ function buildWorkflowFileHandlerSource(input: {
     );
   }
 
-  lines.push("", "export default async ({ req }) => {", "  return await POST(req);", "};", "");
+  lines.push("", "export default async ({ req }) => {", "  return POST(req);", "};", "");
 
   return lines.join("\n");
 }
