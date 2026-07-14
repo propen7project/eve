@@ -223,6 +223,10 @@ function buildWorkflowFileHandlerSource(input: {
       lines.push(`import ${JSON.stringify(input.workflowWorldPluginImportSpecifier)};`);
     }
 
+    // NOTE: The generated handler intentionally uses top-level `await`.
+    // This requires the emitted module to stay ESM (for example `.mjs`) and be
+    // loaded/transpiled by tooling that supports top-level await. Changing the
+    // extension/loader pipeline to CommonJS or non-TLA environments will fail at load time.
     lines.push(
       `import { getWorld as __eveGetWorkflowWorld } from ${JSON.stringify(input.runtimeImportSpecifier)};`,
       "",
