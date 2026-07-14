@@ -52,10 +52,6 @@ function escapeUnsafeCharsForInlineJs(value: string): string {
   return value.replace(/[<>\/\\\b\f\n\r\t\0\u2028\u2029]/g, (char) => INLINE_JS_UNSAFE_CHAR_MAP[char] ?? char);
 }
 
-function includesWorkflowBundles(surface: NitroBuildSurface): boolean {
-  return includesWorkflowRoute(surface);
-}
-
 function includesWorkflowRoute(surface: NitroBuildSurface): boolean {
   return surface === "all" || surface === "flow";
 }
